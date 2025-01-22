@@ -1,0 +1,31 @@
+<mvc:View xmlns:tnt="sap.tnt" xmlns:f2="sap.f" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.ui.layout.form" xmlns:t="sap.ui.table"
+	controllerName="vcpapp.vcpplanningrelevantpid.controller.Home">
+	<Page >
+		<headerContent>
+      <Label id="idLoc" text="Location :" />
+			<MultiInput required="true" id="idLocation" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px"
+				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
+                 <Label id="idProd" text="Product :" />
+                			<MultiInput required="true" id="idProduct" showValueHelp="true" placeholder="Product" change="onSelPrimary" width="250px"
+				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
+
+
+				<Button id="idGetData" text="Go" press="onGetData" type="Emphasized" visible="true"/>
+			<Button id="idRestore" text="Reset" press="onReset" type="Default" visible="true"/>
+				<Label text="TYPE" textAlign="Right" />
+				<Select id="idPrpIdType" selectedKey="3" change="onSelectionofPrpType" textAlign="Right" class="sapUiSmallMarginEnd">
+				                       
+										<core:ListItem key="1" text="1"/>
+										<core:ListItem key="2" text="2"/>
+										<core:ListItem key="3" text="3"/>
+										 <core:ListItem key="4" text="4"/>
+									</Select>
+			<ToolbarSpacer/>
+
+		</headerContent>
+		<!-- <content> -->
+		<html:div id="mainDiv" class="mainDivClass"/>
+		<!-- </content> -->
+	</Page>
+</mvc:View>
