@@ -3,10 +3,10 @@
 	controllerName="vcpapp.vcpplanningrelevantpid.controller.Home">
 	<Page >
 		<headerContent>
-      <Label id="idLoc" text="Location :" />
+      <Label id="idLoc" required="true" text="Location :" />
 			<MultiInput required="true" id="idLocation" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px"
 				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
-                 <Label id="idProd" text="Product :" />
+                 <Label id="idProd" required="true" text="Product :" />
                 			<MultiInput required="true" id="idProduct" showValueHelp="true" placeholder="Product" change="onSelPrimary" width="250px"
 				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
 

@@ -182,24 +182,30 @@ sap.ui.define([
             
         },
         onSelectionofPrpType:function(oEvent){
-            var oEv = oEvent.getSource()
-            var oSelId = that.byId("idPrpIdType").getSelectedKey();
-            var data  = that.oPrimKeys.filter((e) => e.PRP_PID_TYPE == parseInt(oSelId))
-            if (data.length > 0) {
-                that.pivotTable(data);
-            } else {
-                var excel = document.querySelector("[id*=mainDiv]");
-                excel.innerHTML = " ";
-                MessageToast.show("No Data for Selected Primary ID Type");
-
+            that.selLoc = that.byId("idLocation").getValue();
+            that.oSelProd = that.byId("idProduct").getValue();
+            if(that.selLoc.length > 0 && that.oSelProd.length > 0){
+                // var oEv = oEvent.getSource()
+                // var oSelId = that.byId("idPrpIdType").getSelectedKey();
+                that.onGetData()
+                // var data  = that.oPrimKeys.filter((e) => e.PRP_PID_TYPE == parseInt(oSelId))
+                // if (data.length > 0) {
+                //     that.pivotTable(data);
+                // } else {
+                    // var excel = document.querySelector("[id*=mainDiv]");
+                    // excel.innerHTML = " ";
+                    // MessageToast.show("No Data for Selected Primary ID Type");
+    
+                // }
+            }else{
+                MessageToast.show("Please Select Mandatory Fields")
+                return;   
             }
-
-
         },
         onGetData:function(){
             that.selLoc = that.byId("idLocation").getValue();
             that.oSelProd = that.byId("idProduct").getValue();
-
+            if(that.selLoc.length > 0 && that.oSelProd.length > 0 ){
             sap.ui.core.BusyIndicator.show();
             that.getOwnerComponent().getModel("BModel").callFunction("/getClusterPRPid", {
                 method: "GET",
@@ -218,12 +224,12 @@ sap.ui.define([
                     else{
                         var data = that.oPrimKeys;
                     }
-
-                    
                     if (data.length > 0) {
                         that.pivotTable(data);
                     } else {
-                        MessageToast.show("No Data");
+                        MessageToast.show("No Data for Selected Fields");
+                        var excel = document.querySelector("[id*=mainDiv]");
+                        excel.innerHTML = " ";
                     }
 
                 },
@@ -232,6 +238,10 @@ sap.ui.define([
                     MessageToast.show("error");
                 },
             })
+        }else{
+            MessageToast.show("Please Select Mandatory Fields")
+            return;
+        }
 
 
 
