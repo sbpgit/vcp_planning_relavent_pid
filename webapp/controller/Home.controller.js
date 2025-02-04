@@ -5,8 +5,9 @@ sap.ui.define([
     "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/ui/core/UIComponent"
-], (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox, UIComponent) => {
+    "sap/ui/core/UIComponent",
+     "sap/ui/export/Spreadsheet"
+], (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox, UIComponent,Spreadsheet) => {
     "use strict";
     var oGModel, that;
 
@@ -32,6 +33,7 @@ sap.ui.define([
 
 
         onAfterRendering:function(){
+            that.byId("idcluCount").setText("Clustering Count : 0");
             sap.ui.core.BusyIndicator.show();
             oGModel = that.getOwnerComponent().getModel("oGModel");
             that.getOwnerComponent().getModel("BModel").read("/getLocation", {
@@ -140,6 +142,7 @@ sap.ui.define([
             // newDiv.textContent = "";
             var excel = document.querySelector("[id*=mainDiv]");
             excel.innerHTML = " ";
+            that.byId("idcluCount").setText("Clustering Count : 0");
         },
         handleSearch:function(oEvent){
             var sQuery =
@@ -216,6 +219,8 @@ sap.ui.define([
                 success: function (oData) {
                     sap.ui.core.BusyIndicator.hide();
                     that.oPrimKeys = JSON.parse(oData.getClusterPRPid);
+                    that.getOwnerComponent().getModel("oGModel").setProperty("/DownLoadData", that.oPrimKeys);
+
                     oGModel = that.getOwnerComponent().getModel("oGModel");
                     var sKey = that.byId("idPrpIdType").getSelectedKey();
                     if(sKey){
@@ -230,7 +235,13 @@ sap.ui.define([
                         MessageToast.show("No Data for Selected Fields");
                         var excel = document.querySelector("[id*=mainDiv]");
                         excel.innerHTML = " ";
+                        that.byId("idcluCount").setText("Clustering Count : 0");
                     }
+                    // var count = data.map(item => item.CLUSTER_ID);
+
+                    var count = that.removeDuplicate(data, "CLUSTER_ID");
+
+                    that.byId("idcluCount").setText("Clustering Count : " + " " + count.length);
 
                 },
                 error: function (oData, error) {
@@ -246,6 +257,10 @@ sap.ui.define([
 
 
 
+        },
+        removeDuplicate: function (array, key) {
+            var check = new Set();
+            return array.filter(obj => !check.has(obj[key]) && check.add(obj[key]));
         },
         // Pivot table functions
         jsonToPivotData: function (data) {
@@ -407,34 +422,51 @@ sap.ui.define([
                     // },
 
                     sorters: {
-                        "Primary ID": function (a, b) {
-                            if (!that.sortCols || !that.sortCols.length) return 0;
+                        // "Primary ID": function (a, b) {
+                        //     if (!that.sortCols || !that.sortCols.length) return 0;
 
-                            const getCharValue = (id, col) =>
-                                that.pivotData.find(o => o.PID === id && o.CHAR_NAME === col)?.CHAR_VALUE;
+                        //     const getCharValue = (id, col) =>
+                        //         that.pivotData.find(o => o.PID === id && o.CHAR_NAME === col)?.CHAR_VALUE;
 
+                        //     const compareValues = (valA, valB) => {
+                        //         if (typeof valA === "number" && typeof valB === "number") {
+                        //             return valA - valB;
+                        //         } else {
+                        //             return String(valA).localeCompare(String(valB));
+                        //         }
+                        //     };
+
+                        //     for (let i = 0; i < that.sortCols.length; i++) {
+                        //         const col = that.sortCols[i];
+                        //         const valA = getCharValue(a, col);
+                        //         const valB = getCharValue(b, col);
+
+                        //         if (valA !== undefined && valB !== undefined) {
+                        //             const result = compareValues(valA, valB);
+                        //             if (result !== 0) return result;
+                        //         } else {
+                        //             return 0; // Stop comparison if any value is undefined
+                        //         }
+                        //     }
+
+                        //     return 0; // All columns are equal
+                        // },
+                        "PRP_ID ID": function (a, b) {
+                            return 0;
+                        },
+                        "Profile": function (a, b) {
+                            return 0;
+                        },
+                        "Cluster_ID": function (a, b) {
                             const compareValues = (valA, valB) => {
                                 if (typeof valA === "number" && typeof valB === "number") {
-                                    return valA - valB;
+                                    return valB - valA;
                                 } else {
-                                    return String(valA).localeCompare(String(valB));
+                                    return String(valB).localeCompare(String(valA));
                                 }
                             };
-
-                            for (let i = 0; i < that.sortCols.length; i++) {
-                                const col = that.sortCols[i];
-                                const valA = getCharValue(a, col);
-                                const valB = getCharValue(b, col);
-
-                                if (valA !== undefined && valB !== undefined) {
-                                    const result = compareValues(valA, valB);
-                                    if (result !== 0) return result;
-                                } else {
-                                    return 0; // Stop comparison if any value is undefined
-                                }
-                            }
-
-                            return 0; // All columns are equal
+                            const result = compareValues(parseInt(a), parseInt(b));
+                            return result;
                         },
                         "Group Name": function (a, b) {
 
@@ -743,5 +775,44 @@ sap.ui.define([
             }
 
         },
+        onDownLoad: function () {
+            that.selLoc = that.byId("idLocation").getValue();
+            that.oSelProd = that.byId("idProduct").getValue();
+            var excel = document.querySelector("[id*=mainDiv]");
+            if(excel.innerHTML == ""){
+                MessageToast.show("No Data is not displaying for download");
+                return;
+            }
+
+            var aCols, oSettings, oSheet;
+            var sFileName = "Planning Relevant PID"
+            var aCols = [];
+            var oStore = [];
+            var aDownLoad = that.getOwnerComponent().getModel("oGModel").getProperty("/DownLoadData");
+
+
+            var aDown = Object.values(aDownLoad)
+            for (var j = 0; j < Object.keys(aDown[0]).length; j++) {
+                aCols.push({
+                    property: Object.keys(aDown[0])[j]
+                });
+            }
+            var oSettings = {
+                workbook: {
+                    columns: aCols
+                },
+                dataSource: aDownLoad,
+                fileName: sFileName,
+                worker: true
+            };
+            var oSheet = new sap.ui.export.Spreadsheet(oSettings);
+            oSheet.build().finally(function () {
+                oSheet.destroy();
+            });
+
+
+
+        },
+
     });
 });

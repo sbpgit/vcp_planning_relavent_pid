@@ -3,6 +3,7 @@
 	controllerName="vcpapp.vcpplanningrelevantpid.controller.Home">
 	<Page >
 		<headerContent>
+		<Label id="idcluCount" text="" />
       <Label id="idLoc" required="true" text="Location :" />
 			<MultiInput required="true" id="idLocation" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px"
 				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
@@ -22,6 +23,7 @@
 										 <core:ListItem key="4" text="4"/>
 									</Select>
 			<ToolbarSpacer/>
+			<Button id="idDownLoad" icon="sap-icon://download" press="onDownLoad" text="Download"  ></Button>
 
 		</headerContent>
 		<!-- <content> -->
