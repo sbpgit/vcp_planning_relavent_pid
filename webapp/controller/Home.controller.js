@@ -779,7 +779,7 @@ sap.ui.define([
             that.selLoc = that.byId("idLocation").getValue();
             that.oSelProd = that.byId("idProduct").getValue();
             var excel = document.querySelector("[id*=mainDiv]");
-            if(excel.innerHTML == ""){
+            if(excel.innerHTML == "" || excel.innerHTML == " "){
                 MessageToast.show("No Data is not displaying for download");
                 return;
             }
