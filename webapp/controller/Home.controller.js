@@ -451,7 +451,7 @@ sap.ui.define([
 
                         //     return 0; // All columns are equal
                         // },
-                        "PRP_ID ID": function (a, b) {
+                        "PRP_ID": function (a, b) {
                             return 0;
                         },
                         "Profile": function (a, b) {
@@ -460,12 +460,12 @@ sap.ui.define([
                         "Cluster_ID": function (a, b) {
                             const compareValues = (valA, valB) => {
                                 if (typeof valA === "number" && typeof valB === "number") {
-                                    return valB - valA;
+                                    return valA - valB;
                                 } else {
                                     return String(valB).localeCompare(String(valA));
                                 }
                             };
-                            const result = compareValues(parseInt(a), parseInt(b));
+                            const result = compareValues(a,b);
                             return result;
                         },
                         "Group Name": function (a, b) {
