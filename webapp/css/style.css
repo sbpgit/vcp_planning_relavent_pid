@@ -20,3 +20,25 @@ table.pvtTable tbody tr th {
 .colorRed{
     background: rgb(222, 129, 129) !important;
 }
+.count{
+    margin-top:10px;
+    margin-right:10px
+}
+.btn{
+    margin-top:21px !important ; 
+    margin-right:10px;
+}
+.Type{
+    margin-top:27px !important ; 
+    margin-right:6px;
+}
+.oLoc{
+    margin-right:10px !important ;
+}
+
+*{
+    scrollbar-width: thin;
+    /*"auto"or "thin"*/
+    scrollbar-color: #888 #f1f1f1;
+    /*thumb and track color*/
+}

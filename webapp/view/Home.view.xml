@@ -1,33 +1,69 @@
-<mvc:View xmlns:tnt="sap.tnt" xmlns:f2="sap.f" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified"
-	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:f="sap.ui.layout.form" xmlns:t="sap.ui.table"
-	controllerName="vcpapp.vcpplanningrelevantpid.controller.Home">
-	<Page >
-		<headerContent>
-		<Label id="idcluCount" text="" />
-      <Label id="idLoc" required="true" text="Location :" />
-			<MultiInput required="true" id="idLocation" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px"
-				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
-                 <Label id="idProd" required="true" text="Product :" />
-                			<MultiInput required="true" id="idProduct" showValueHelp="true" placeholder="Product" change="onSelPrimary" width="250px"
-				valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
+<mvc:View xmlns:f="sap.f"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:u="sap.ui.unified"
+	xmlns:l="sap.ui.layout"
+	xmlns:html="http://www.w3.org/1999/xhtml" controllerName="vcpapp.vcpplanningrelevantpid.controller.Home">
+	<f:DynamicPage >
+		<!-- DynamicPage Title -->
+		<f:title>
+			<f:DynamicPageTitle>
+				<f:heading>
+					<VariantManagement id="idMatList123" select="handleSelectPress" save="onCreate" manage="onManage" supportFavorites="false" showFooter="true" popoverTitle="My Views" items="{path: '/items12'}" creationAllowed="true" supportPublic="true" supportApplyAutomatically="false" manageCancel="onManageCancel" cancel="onNameCancel" visible="true">
+						<items>
+							<VariantItem key="{VARIANTID}" text="{VARIANTNAME}" author="{USER}" visible="true" remove="{path:'REMOVE', formatter:'.formatter.formatRemove'}" sharing="{path:'SCOPE', formatter:'.formatter.formatScope'}" changeable="{path:'CHANGE', formatter:'.formatter.formatChange'}" rename="false" enabled="{path:'ENABLE', formatter:'.formatter.formatEnable'}"/>
+						</items>
+					</VariantManagement>
 
+				</f:heading>
+			</f:DynamicPageTitle>
+		</f:title>
+		<!-- DynamicPage Header -->
+		<f:header>
+			<f:DynamicPageHeader pinnable="true">
+			
+				<l:VerticalLayout >
+					<Label text="" class="count"/>
+					<Label id="idcluCount" text="" class="oLoc" />
+				</l:VerticalLayout>
+				<l:VerticalLayout >
+					<Label id="idLoc" required="true" text="Location" />
+					<MultiInput required="true" id="idLocation" class="oLoc" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
+				</l:VerticalLayout>
+				<l:VerticalLayout >
+					<Label id="idProd" required="true" text="Product" />
+					<MultiInput required="true" id="idProduct" class="oLoc" showValueHelp="true" placeholder="Product" change="onSelPrimary" width="250px" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
+				</l:VerticalLayout>
+				<l:HorizontalLayout >
+					<Button id="idGetData" text="Go" press="onGetData" type="Emphasized" visible="true" class="btn"/>
+					<Button id="idRestore" text="Reset" press="onReset" type="Default" visible="true" class="btn"/>
+					<Label text="TYPE" id = "idType" textAlign="Right" class="Type" />
+					<Select id="idPrpIdType" selectedKey="3" change="onSelectionofPrpType" textAlign="Right" class="sapUiSmallMarginEnd btn">
 
-				<Button id="idGetData" text="Go" press="onGetData" type="Emphasized" visible="true"/>
-			<Button id="idRestore" text="Reset" press="onReset" type="Default" visible="true"/>
-				<Label text="TYPE" textAlign="Right" />
-				<Select id="idPrpIdType" selectedKey="3" change="onSelectionofPrpType" textAlign="Right" class="sapUiSmallMarginEnd">
-				                       
-										<core:ListItem key="1" text="1"/>
-										<core:ListItem key="2" text="2"/>
-										<core:ListItem key="3" text="3"/>
-										 <core:ListItem key="4" text="4"/>
-									</Select>
-			<ToolbarSpacer/>
-			<Button id="idDownLoad" icon="sap-icon://download" press="onDownLoad" text="Download"  ></Button>
+						<core:ListItem key="1" text="1"/>
+						<core:ListItem key="2" text="2"/>
+						<core:ListItem key="3" text="3"/>
+						<core:ListItem key="4" text="4"/>
+					</Select>
+				</l:HorizontalLayout >
+	
+				<!-- <ToolbarSpacer/>
+				<Button id="idDownLoad" icon="sap-icon://download" press="onDownLoad" text="Download"></Button> -->
+			</f:DynamicPageHeader>
+		</f:header>
+		<f:content>
+			<html:div id="mainDiv" class="mainDivClass"/>
+		</f:content>
+		<!-- DynamicPage Footer -->
 
-		</headerContent>
-		<!-- <content> -->
-		<html:div id="mainDiv" class="mainDivClass"/>
-		<!-- </content> -->
-	</Page>
+		<f:footer>
+			<OverflowToolbar>
+
+				<ToolbarSpacer/>
+				<Button id="idDownLoad" icon="sap-icon://download" press="onDownLoad" text="Download"></Button>
+			</OverflowToolbar>
+		</f:footer>
+
+	</f:DynamicPage>
 </mvc:View>
