@@ -35,6 +35,9 @@ table.pvtTable tbody tr th {
 .oLoc{
     margin-right:10px !important ;
 }
+div#__layout5 {
+    margin-left: 28.5%;
+}
 
 *{
     scrollbar-width: thin;
