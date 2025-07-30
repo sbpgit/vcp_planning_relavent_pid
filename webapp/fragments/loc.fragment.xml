@@ -6,7 +6,7 @@
     xmlns:form="sap.ui.layout.form">
     <SelectDialog
         id="loc"
-        title="Location"
+        title="Demand Location"
         items="{/LocModel}"
         selectionChange="RequireProduct"
         liveChange="handleSearch"
