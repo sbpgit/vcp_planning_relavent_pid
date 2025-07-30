@@ -33,7 +33,7 @@
 					<MultiInput required="true" id="idLocation" class="oLoc" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
 				</l:VerticalLayout>
 				<l:VerticalLayout >
-					<Label id="idProd" required="true" text="Product" />
+					<Label id="idProd" required="true" text="Partial Product" />
 					<MultiInput required="true" id="idProduct" class="oLoc" showValueHelp="true" placeholder="Product" change="onSelPrimary" width="250px" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
 				</l:VerticalLayout>
 				<l:HorizontalLayout >

@@ -7,7 +7,7 @@
 >
  <SelectDialog
         id="prod"
-        title="Products"
+        title="Partial Products"
         items="{/ProdModel}"
         selectionChange="RequireProduct"
         liveChange="handleSearch"
