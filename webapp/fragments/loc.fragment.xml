@@ -5,7 +5,7 @@
     xmlns:layout="sap.ui.layout"
     xmlns:form="sap.ui.layout.form">
     <SelectDialog
-        id="loc"
+        id="locPID"
         title="Demand Location"
         items="{/LocModel}"
         selectionChange="RequireProduct"

@@ -22,11 +22,11 @@ sap.ui.define([
             this.variantModel = new JSONModel();
             that.viewDetails.setSizeLimit(5000);
             that.variantModel.setSizeLimit(5000);
-            that.oLoc1 = that.byId("idLocation");
-            that.oProd = that.byId("idProduct");
-            that.oType = that.byId("idPrpIdType")
-            that.oLocList = sap.ui.getCore().byId("loc");
-            that.oProdList = sap.ui.getCore().byId("prod");
+            that.oLoc1 = that.byId("idLocationPID");
+            that.oProd = that.byId("idProductPID");
+            that.oType = that.byId("idPrpIdTypePID")
+            that.oLocList = sap.ui.getCore().byId("locPID");
+            that.oProdList = sap.ui.getCore().byId("prodPID");
             that.allData = [];
             if (!that._locFrag) {
                 that._locFrag = sap.ui.xmlfragment("vcpapp.vcpplanningrelevantpid.fragments.loc", that);
@@ -58,8 +58,8 @@ sap.ui.define([
             var dData = [], uniqueName = [];
             that.uniqueName = [];
             sap.ui.core.BusyIndicator.show();
-            var variantUser =  that.getUser();
-            // var variantUser = 'pradeepkumardaka@sbpcorp.in';
+            var variantUser = that.getUser();
+            // var variantUser = 'maheshavireddy@sbpdigital.com';
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             that.oGModel.setProperty("/UserId", variantUser);
             // Define the filters
@@ -68,6 +68,9 @@ sap.ui.define([
 
             var oFilterAppName2 = new sap.ui.model.Filter("APPLICATION_NAME", sap.ui.model.FilterOperator.EQ, appName);
             var oFilterScope = new sap.ui.model.Filter("SCOPE", sap.ui.model.FilterOperator.EQ, "Public");
+
+            var oFilterAppName3 = new sap.ui.model.Filter("APPLICATION_NAME", sap.ui.model.FilterOperator.EQ, 'DefaultSingle');
+            var oFilterUser1 = new sap.ui.model.Filter("USER", sap.ui.model.FilterOperator.EQ, variantUser);
 
             var oFilterCondition1 = new sap.ui.model.Filter({
                 filters: [oFilterAppName1, oFilterUser],
@@ -78,14 +81,21 @@ sap.ui.define([
                 filters: [oFilterAppName2, oFilterScope],
                 and: true // Combine with AND
             });
+
+            var oFilterCondition3 = new sap.ui.model.Filter({
+                filters: [oFilterAppName3, oFilterUser1],
+                and: true // Combine with AND
+            });
+
             var oFinalFilter = new sap.ui.model.Filter({
-                filters: [oFilterCondition1, oFilterCondition2],
+                filters: [oFilterCondition1, oFilterCondition2, oFilterCondition3],
                 and: false // Combine with OR
             });
 
             this.getView().getModel("BModel").read("/getVariantHeader", {
                 filters: [oFinalFilter],
                 success: function (oData) {
+                    that.oGModel.setProperty("/headerDetails", oData.results);
                     if (oData.results.length === 0) {
                         that.oGModel.setProperty("/variantDetails", "");
                         that.oGModel.setProperty("/fromFunction", "X");
@@ -104,10 +114,10 @@ sap.ui.define([
                             items12: uniqueName
                         });
                         that.varianNames = uniqueName;
-                        that.byId("idMatList123").setModel(that.viewDetails);
+                        that.byId("idMatList123PID").setModel(that.viewDetails);
                         that.UniqueDefKey = uniqueName[0].VARIANTID;
-                        that.byId("idMatList123").setDefaultKey(uniqueName[0].VARIANTID);
-                        that.byId("idMatList123").setSelectedKey(uniqueName[0].VARIANTID);
+                        that.byId("idMatList123PID").setDefaultKey(uniqueName[0].VARIANTID);
+                        that.byId("idMatList123PID").setSelectedKey(uniqueName[0].VARIANTID);
                         var Default = "Standard";
                         if (that.oGModel.getProperty("/newVaraintFlag") === "X") {
                             var newVariant = that.oGModel.getProperty("/newVariant");
@@ -122,8 +132,8 @@ sap.ui.define([
                             if (oData.results[i].DEFAULT === "Y" && oData.results[i].USER === variantUser) {
                                 dData.push(oData.results[i]);
                                 that.UniqueDefKey = oData.results[i].VARIANTID;
-                                that.byId("idMatList123").setDefaultKey((oData.results[i].VARIANTID));
-                                that.byId("idMatList123").setSelectedKey((oData.results[i].VARIANTID))
+                                that.byId("idMatList123PID").setDefaultKey((oData.results[i].VARIANTID));
+                                that.byId("idMatList123PID").setSelectedKey((oData.results[i].VARIANTID))
                             }
                             if (oData.results[i].USER !== variantUser) {
                                 oData.results[i].CHANGE = false;
@@ -162,6 +172,7 @@ sap.ui.define([
             this.getOwnerComponent().getModel("BModel").read("/getVariant", {
                 filters: [oFilters],
                 success: function (oData) {
+                    that.oGModel.setProperty("/fieldDetails", oData.results);
                     var variantNewData = oData.results;
                     aData = variantNewData.map(item1 => {
                         const item2 = headerData.find(item2 => item2.VARIANTID === item1.VARIANTID);
@@ -169,6 +180,7 @@ sap.ui.define([
                     });
                     that.oGModel.setProperty("/variantDetails", aData);
                     if (aData.length > 0) {
+                        aData = aData.filter(id => id.VARIANTNAME !== "defaultSingle" && id.APPLICATION_NAME !== "DefaultSingle")
                         uniqueName = that.removeDuplicate(aData, "VARIANTNAME");
                         that.oGModel.setProperty("/saveBtn", "");
                         for (var k = 0; k < uniqueName.length; k++) {
@@ -203,15 +215,15 @@ sap.ui.define([
                         });
                         that.varianNames = uniqueName;
                         that.oGModel.setProperty("/defaultDetails", defaultDetails);
-                        that.byId("idMatList123").setModel(that.variantModel);
+                        that.byId("idMatList123PID").setModel(that.variantModel);
                         if (that.oGModel.getProperty("/newVaraintFlag") === "X") {
                             var newVariant = that.oGModel.getProperty("/newVariant");
                             that.handleSelectPress(newVariant[0].VARIANTNAME);
                             if (newVariant[0].DEFAULT === "Y") {
                                 that.UniqueDefKey = newVariant[0].VARIANTID;
-                                that.byId("idMatList123").setDefaultKey((newVariant[0].VARIANTID));
+                                that.byId("idMatList123PID").setDefaultKey((newVariant[0].VARIANTID));
                             }
-                            that.byId("idMatList123").setSelectedKey((newVariant[0].VARIANTID))
+                            that.byId("idMatList123PID").setSelectedKey((newVariant[0].VARIANTID))
                             that.oGModel.setProperty("/newVaraintFlag", "");
                         } else {
                             that.handleSelectPress(Default);
@@ -233,21 +245,21 @@ sap.ui.define([
                             items12: uniqueName
                         });
                         that.varianNames = uniqueName;
-                        that.byId("idMatList123").setModel(that.viewDetails);
+                        that.byId("idMatList123PID").setModel(that.viewDetails);
                         var Default = "Standard";
                         if (that.oGModel.getProperty("/newVaraintFlag") === "X") {
                             var newVariant = that.oGModel.getProperty("/newVariant");
                             that.handleSelectPress(newVariant[0].VARIANTNAME);
                             if (newVariant[0].DEFAULT === "Y") {
                                 that.UniqueDefKey = newVariant[0].VARIANTID;
-                                that.byId("idMatList123").setDefaultKey((newVariant[0].VARIANTID));
+                                that.byId("idMatList123PID").setDefaultKey((newVariant[0].VARIANTID));
                             }
-                            that.byId("idMatList123").setSelectedKey((newVariant[0].VARIANTID))
+                            that.byId("idMatList123PID").setSelectedKey((newVariant[0].VARIANTID))
                             that.oGModel.setProperty("/newVaraintFlag", "");
                         } else {
                             that.UniqueDefKey = uniqueName[0].VARIANTID;
-                            that.byId("idMatList123").setDefaultKey((uniqueName[0].VARIANTID));
-                            that.byId("idMatList123").setSelectedKey((uniqueName[0].VARIANTID));
+                            that.byId("idMatList123PID").setDefaultKey((uniqueName[0].VARIANTID));
+                            that.byId("idMatList123PID").setSelectedKey((uniqueName[0].VARIANTID));
                             that.handleSelectPress(Default);
                         }
                     }
@@ -263,13 +275,13 @@ sap.ui.define([
         /**On Press of Variant Name */
         handleSelectPress: function (oEvent) {
             sap.ui.core.BusyIndicator.show();
-            // that.oLoc1 = that.byId("idLocation")
-            // that.oProd = that.byId("idProduct")
+            // that.oLoc1 = that.byId("idLocationPID")
+            // that.oProd = that.byId("idProductPID")
             var oLoc, oProd, oType, oTokens = {}, custToken = [];
             that.locProdFilters = [];
             that.finaloTokens = [];
             var oTableItems = that.oGModel.getProperty("/variantDetails");
-            that.byId("idMatList123").setModified(false);
+            that.byId("idMatList123PID").setModified(false);
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             that.oGModel.setProperty("/setCust", []);
             that.oGModel.setProperty("/setLocation", '');
@@ -323,20 +335,7 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        // else if (oTableItems[i].FIELD.includes("IdType")) {
-                        //     var oCustTemplate = new sap.m.Token({
-                        //         key: oTableItems[i].FIELD_CENTER,
-                        //         text: oTableItems[i].VALUE
-                        //     });
-                        //     custToken.push(oCustTemplate);
-                        //     oCustTemplate = {};
-                        //     oTokens = {
-                        //         FIELD: oTableItems[i].FIELD,
-                        //         VALUE: oTableItems[i].FIELD_CENTER
-                        //     }
-                        //     that.finaloTokens.push(oTokens);
-                        //     that.oGModel.setProperty("/defaultCustomer", custToken);
-                        // }
+
 
                     }
                 }
@@ -344,63 +343,117 @@ sap.ui.define([
 
                 that.oProd.setValue(oProd);
 
-                //   that.oCust.removeAllTokens();
-                // this._locFrag
-                //     .getAggregation("_dialog")
-                //     .getContent()[1]
-                //     .removeSelections();
-                // this._prodFrag
-                //     .getAggregation("_dialog")
-                //     .getContent()[1]
-                //     .removeSelections();
-                // this._valueHelpDialogLoc
-                //     .getAggregation("_dialog")
-                //     .getContent()[1]
-                //     .removeSelections();
+
                 if (oLoc) {
                     that.oLoc1.setValue(oLoc);
                     that.oGModel.setProperty("/setLocation", oLoc);
-                }else{
+                } else {
                     that.oLoc1.setValue("");
                 }
                 if (oProd) {
                     that.oProd.setValue(oProd);
                     that.oGModel.setProperty("/setProduct", oProd);
 
-                }else{
+                } else {
                     that.oProd.setValue("");
                 }
                 if (oType) {
                     that.oType.setValue(oType)
                     that.oGModel.getProperty("/defaultType", oType);
                 }
-                else{
+                else {
                     that.oType.setValue("");
                 }
-            
+
                 sap.ui.core.BusyIndicator.hide();
             }
             else {
-                sap.ui.core.BusyIndicator.hide();
-                //do nothing
-                that.byId("idProduct").setValue();
-                that.byId("idLocation").setValue();
-                //  that.byId("idCustGrp").removeAllTokens();
-                that.onReset();
+                let headerDetails = that.oGModel.getProperty("/headerDetails").filter(id => id.APPLICATION_NAME == "DefaultSingle" && id.VARIANTNAME == "defaultSingle");
+                if (headerDetails.length) {
+                    for (var i = 0; i < oTableItems.length; i++) {
+                        if (oTableItems[i].FIELD.includes("Loc")) {
+                            oLoc = oTableItems[i].VALUE;
+                            that.oGModel.setProperty("/defaultLocation", oLoc);
+                            var sFilter = new sap.ui.model.Filter({
+                                path: "LOCATION_ID",
+                                operator: sap.ui.model.FilterOperator.EQ,
+                                value1: oTableItems[i].VALUE,
+                            });
+                            that.locProdFilters.push(sFilter);
+
+                        }
+                        else if (oTableItems[i].FIELD.includes("Prod")) {
+                            oProd = oTableItems[i].VALUE;
+                            that.oGModel.setProperty("/defaultProduct", oProd);
+                            var sFilter = new sap.ui.model.Filter({
+                                path: "PRODUCT_ID",
+                                operator: sap.ui.model.FilterOperator.EQ,
+                                value1: oTableItems[i].VALUE,
+                            });
+                            that.locProdFilters.push(sFilter);
+
+                        }
+                        else if (oTableItems[i].FIELD.includes("TYPE")) {
+                            oType = oTableItems[i].VALUE;
+                            that.oGModel.setProperty("/defaultType", oType);
+                            var sFilter = new sap.ui.model.Filter({
+                                path: "TYPE",
+                                operator: sap.ui.model.FilterOperator.EQ,
+                                value1: oTableItems[i].VALUE,
+                            });
+                            that.locProdFilters.push(sFilter);
+
+                        }
+                    }
+                    that.oProd.setValue(oProd);
+
+
+                    if (oLoc) {
+                        that.oLoc1.setValue(oLoc);
+                        that.oGModel.setProperty("/setLocation", oLoc);
+                    } else {
+                        that.oLoc1.setValue("");
+                    }
+                    if (oProd) {
+                        that.oProd.setValue(oProd);
+                        that.oGModel.setProperty("/setProduct", oProd);
+
+                    } else {
+                        that.oProd.setValue("");
+                    }
+                    if (oType) {
+                        that.oType.setSelectedKey(oType)
+                        that.oGModel.getProperty("/defaultType", oType);
+                    }
+                    else {
+                        that.oType.setValue("");
+                    }
+
+                    sap.ui.core.BusyIndicator.hide();
+                }
+                else {
+                    sap.ui.core.BusyIndicator.hide();
+                    //do nothing
+                    that.byId("idProductPID").setValue();
+                    that.byId("idLocationPID").setValue();
+                    //  that.byId("idCustGrp").removeAllTokens();
+                    that.onReset();
+                }
             }
+
         },
 
         onReset: function () {
-            that.byId("idLocation").setValue("");
-            that.byId("idProduct").setValue("");
-            that.byId("idPrpIdType").setSelectedKey("3");
-            // var existingDiv = document.querySelector(`[id*=mainDiv]`);
+            that.byId("idLocationPID").setValue("");
+            that.byId("idProductPID").setValue("");
+            that.byId("idPrpIdTypePID").setSelectedKey("3");
+            // var existingDiv = document.querySelector(`[id*=mainDivPID]`);
             // var newDiv = document.createElement("div");
             // newDiv.id = `pivotGrid`;
             // newDiv.textContent = "";
-            var excel = document.querySelector("[id*=mainDiv]");
+            var excel = document.querySelector("[id*=mainDivPID]");
             excel.innerHTML = " ";
-            that.byId("idcluCount").setText("Clustering Count : 0");
+            that.byId("idcluCountPID").setText("Clustering Count : 0");
         },
         /**
           * Saving the VIEW on press of save in NameVariant fragment
@@ -410,12 +463,12 @@ sap.ui.define([
             sap.ui.core.BusyIndicator.show();
             var array = [];
             var details = {};
-            var sLocation = that.byId("idLocation").getValue();
-            var Field1 = that.byId("idLoc").getText();
-            var sProduct = that.byId("idProduct").getValue();
-            var Field2 = that.byId("idProd").getText();
-            var sType = that.byId("idPrpIdType").getSelectedKey()
-            var Field3 = that.byId("idType").getText()
+            var sLocation = that.byId("idLocationPID").getValue();
+            var Field1 = that.byId("idLocPID").getText();
+            var sProduct = that.byId("idProductPID").getValue();
+            var Field2 = that.byId("idProdPID").getText();
+            var sType = that.byId("idPrpIdTypePID").getSelectedKey()
+            var Field3 = that.byId("idTypePID").getText()
             var varName = oEvent.getParameters().name;
             var sDefault = oEvent.getParameters().def;
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
@@ -516,7 +569,7 @@ sap.ui.define([
                     success: function (oData) {
                         that.oGModel.setProperty("/newVariant", oData.results);
                         that.oGModel.setProperty("/newVaraintFlag", "X");
-                        that.byId("idMatList123").setModified(false);
+                        that.byId("idMatList123PID").setModified(false);
                         that.onAfterRendering();
                     },
                     error: function (error) {
@@ -537,7 +590,7 @@ sap.ui.define([
             var totalVariantData = that.oGModel.getProperty("/VariantData");
             var selected = oEvent.getParameters();
             var variantUser = that.getUser();
-            // var variantUser = 'pradeepkumardaka@sbpcorp.in';
+            // var variantUser = 'maheshavireddy@sbpdigital.com';
             if (selected.def) {
                 totalVariantData.filter(item1 => {
                     if (JSON.parse(selected.def) === item1.VARIANTID && item1.USER !== variantUser) {
@@ -550,8 +603,8 @@ sap.ui.define([
                 that.viewDetails.setData({
                     items12: that.varianNames
                 });
-                that.byId("idMatList123").setModel(that.viewDetails);
-                that.byId("idMatList123").setDefaultKey(that.UniqueDefKey);
+                that.byId("idMatList123PID").setModel(that.viewDetails);
+                that.byId("idMatList123PID").setDefaultKey(that.UniqueDefKey);
                 return MessageToast.show("Variant doesn't belong to logged in user. Cannot make changes to this Variant");
             }
             //Delete the selected variant names
@@ -646,7 +699,7 @@ sap.ui.define([
                         },
                     });
                 }
-            }else{
+            } else {
                 that.onAfterRendering();
             }
             sap.ui.core.BusyIndicator.hide();
@@ -676,7 +729,7 @@ sap.ui.define([
 
         onAfterRendering: function () {
             that.skip = 0;
-            that.byId("idcluCount").setText("Clustering Count : 0");
+            that.byId("idcluCountPID").setText("Clustering Count : 0");
 
             sap.ui.core.BusyIndicator.show();
             that.getOwnerComponent().getModel("BModel").read("/getUserPreferences", {
@@ -717,7 +770,7 @@ sap.ui.define([
                         that.LocModel.setData({
                             LocModel: that.aLocData
                         })
-                        sap.ui.getCore().byId("loc").setModel(that.LocModel);
+                        sap.ui.getCore().byId("locPID").setModel(that.LocModel);
                         sap.ui.core.BusyIndicator.hide();
                         that.getProduct()
 
@@ -779,14 +832,20 @@ sap.ui.define([
 
         onValueHelp: function (oEvent) {
             var oEv = oEvent.getSource().sId;
-            if (oEv.includes("idLocation")) {
-                sap.ui.getCore().byId("loc").getBinding("items").filter([])
+            if (oEv.includes("idLocationPID")) {
+                sap.ui.getCore().byId("locPID").getBinding("items").filter([])
                 that._locFrag.open()
 
             } else {
-                if (that.byId("idLocation").getValue().length > 0) {
-                    sap.ui.getCore().byId("prod").getBinding("items").filter([])
-                    that._prodFrag.open()
+                if (that.byId("idLocationPID").getValue().length > 0) {
+                    if(sap.ui.getCore().byId("prodPID").getItems().length > 0 ){
+                        sap.ui.getCore().byId("prodPID").getBinding("items").filter([])
+                        that._prodFrag.open()
+                    }else{
+                        that.onLocationSelect(oEvent);
+                        that._prodFrag.open()
+                    }
+                   
                 } else {
                     MessageToast.show("Please Select a Location")
                 }
@@ -796,12 +855,12 @@ sap.ui.define([
 
             // var oLoc = that.oGModel.getProperty("/setLocation");
             // var oProd = that.oGModel.getProperty("/setProduct");
-          
+
             // var oLocation = that.aLocData;
             // var oProduct = that.prodData;
 
-            // if (oEv.includes("idLocation")) {
-              
+            // if (oEv.includes("idLocationPID")) {
+
             //     for (var k = 0; k < oLocation.length; k++) {
             //         if (oLocation[k].LOCATION_ID === oLoc) {
             //             oLocation[k].setSelected(true);
@@ -810,7 +869,7 @@ sap.ui.define([
             //     that._locFrag.open();
             //     // Prod Dialog
             // }
-            // else if (that.byId("idLocation").getValue().length > 0) {
+            // else if (that.byId("idLocationPID").getValue().length > 0) {
 
             //     var oLoc = that.oGModel.getProperty("/setLocation");
             //     for (var k = 0; k < oProduct.length; k++) {
@@ -828,6 +887,12 @@ sap.ui.define([
         onLocationSelect: function (oEvent) {
             var oEv = oEvent.getParameter("selectedItem");
             if (!oEv) {
+                that.aProd = that.ProdData.filter((e) => e.LOCATION_ID == that.byId("idLocationPID").getValue());
+                that.ProdModel = new JSONModel();
+                that.ProdModel.setData({
+                    ProdModel: that.aProd
+                });
+                sap.ui.getCore().byId("prodPID").setModel(that.ProdModel)
                 return;
             }
             that.aProd = that.ProdData.filter((e) => e.LOCATION_ID == oEv.getTitle());
@@ -835,13 +900,13 @@ sap.ui.define([
             that.ProdModel.setData({
                 ProdModel: that.aProd
             });
-            sap.ui.getCore().byId("prod").setModel(that.ProdModel)
-            that.byId("idLocation").setValue(oEv.getTitle());
+            sap.ui.getCore().byId("prodPID").setModel(that.ProdModel)
+            that.byId("idLocationPID").setValue(oEv.getTitle());
             var selectedLocItem = oEv.getTitle()
             if (that.oGModel.getProperty("/defaultLocation") !== selectedLocItem) {
-                that.byId("idMatList123").setModified(true);
+                that.byId("idMatList123PID").setModified(true);
             }
-            that.byId("idProduct").setValue("")
+            that.byId("idProductPID").setValue("")
             // that._locFrag.close()
         },
         onProdSelect: function (oEvent) {
@@ -850,9 +915,9 @@ sap.ui.define([
                 return
             }
             var selectedLocItem = oEv.getTitle()
-            that.byId("idProduct").setValue(oEv.getTitle());
+            that.byId("idProductPID").setValue(oEv.getTitle());
             if (that.oGModel.getProperty("/defaultLocation") !== selectedLocItem) {
-                that.byId("idMatList123").setModified(true);
+                that.byId("idMatList123PID").setModified(true);
             }
             // that.onGetData()
 
@@ -864,7 +929,7 @@ sap.ui.define([
                 sId = oEvent.getParameter("id"),
                 oFilters = [];
             sQuery = sQuery ? sQuery.trim() : "";
-            if (sId.includes("loc")) {
+            if (sId.includes("locPID")) {
                 if (sQuery !== "") {
                     oFilters.push(
                         new sap.ui.model.Filter({
@@ -878,10 +943,10 @@ sap.ui.define([
                 }
 
 
-                sap.ui.getCore().byId("loc").getBinding("items").filter(oFilters);
+                sap.ui.getCore().byId("locPID").getBinding("items").filter(oFilters);
 
             }
-            else if (sId.includes("prod")) {
+            else if (sId.includes("prodPID")) {
                 if (sQuery !== "") {
                     oFilters.push(
                         new sap.ui.model.Filter({
@@ -893,23 +958,23 @@ sap.ui.define([
                         })
                     );
                 }
-                sap.ui.getCore().byId("prod").getBinding("items").filter(oFilters);
+                sap.ui.getCore().byId("prodPID").getBinding("items").filter(oFilters);
             }
 
 
         },
         onSelectionofPrpType: function (oEvent) {
-            that.selLoc = that.byId("idLocation").getValue();
-            that.oSelProd = that.byId("idProduct").getValue();
+            that.selLoc = that.byId("idLocationPID").getValue();
+            that.oSelProd = that.byId("idProductPID").getValue();
             if (that.selLoc.length > 0 && that.oSelProd.length > 0) {
                 // var oEv = oEvent.getSource()
-                // var oSelId = that.byId("idPrpIdType").getSelectedKey();
+                // var oSelId = that.byId("idPrpIdTypePID").getSelectedKey();
                 that.onGetData()
                 // var data  = that.oPrimKeys.filter((e) => e.PRP_PID_TYPE == parseInt(oSelId))
                 // if (data.length > 0) {
                 //     that.pivotTable(data);
                 // } else {
-                // var excel = document.querySelector("[id*=mainDiv]");
+                // var excel = document.querySelector("[id*=mainDivPID]");
                 // excel.innerHTML = " ";
                 // MessageToast.show("No Data for Selected Primary ID Type");
 
@@ -920,8 +985,8 @@ sap.ui.define([
             }
         },
         onGetData: function () {
-            that.selLoc = that.byId("idLocation").getValue();
-            that.oSelProd = that.byId("idProduct").getValue();
+            that.selLoc = that.byId("idLocationPID").getValue();
+            that.oSelProd = that.byId("idProductPID").getValue();
             if (that.selLoc.length > 0 && that.oSelProd.length > 0) {
                 sap.ui.core.BusyIndicator.show();
                 that.getOwnerComponent().getModel("BModel").callFunction("/getClusterPRPid", {
@@ -936,7 +1001,7 @@ sap.ui.define([
                         that.getOwnerComponent().getModel("oGModel").setProperty("/DownLoadData", that.oPrimKeys);
 
                         oGModel = that.getOwnerComponent().getModel("oGModel");
-                        var sKey = that.byId("idPrpIdType").getSelectedKey();
+                        var sKey = that.byId("idPrpIdTypePID").getSelectedKey();
                         if (sKey) {
                             var data = that.oPrimKeys.filter((e) => e.PRP_PID_TYPE == parseInt(sKey))
                         }
@@ -947,15 +1012,20 @@ sap.ui.define([
                             that.pivotTable(data);
                         } else {
                             MessageToast.show("No Data for Selected Fields");
-                            var excel = document.querySelector("[id*=mainDiv]");
+                            var excel = document.querySelector("[id*=mainDivPID]");
                             excel.innerHTML = " ";
-                            that.byId("idcluCount").setText("Clustering Count : 0");
+                            that.byId("idcluCountPID").setText("Clustering Count : 0");
                         }
                         // var count = data.map(item => item.CLUSTER_ID);
 
                         var count = that.removeDuplicate(data, "CLUSTER_ID");
 
-                        that.byId("idcluCount").setText("Clustering Count : " + " " + count.length);
+                        that.byId("idcluCountPID").setText("Clustering Count : " + " " + count.length);
+
+                        if (that.oSelProd.length || that.selLoc.length > 0) {
+                            that.saveDefaultVariant();
+                        }
+
 
                     },
                     error: function (oData, error) {
@@ -1030,7 +1100,7 @@ sap.ui.define([
             return [headers, ...data1];
         },
         addScrollEvent: function () {
-            var oPivotDiv = that.byId("mainDiv").getDomRef();
+            var oPivotDiv = that.byId("mainDivPID").getDomRef();
 
             // Track previous scroll position
             var lastScrollTop = 0;
@@ -1077,17 +1147,17 @@ sap.ui.define([
             that.selLoc = data[0].LOCATION_ID;
             that.selProd = data[0].PRODUCT_ID;
 
-            var existingDiv = document.querySelector(`[id*=mainDiv]`);
+            var existingDiv = document.querySelector(`[id*=mainDivPID]`);
             var newDiv = document.createElement("div");
             newDiv.id = `pivotGrid`;
             newDiv.textContent = "";
-            var existingDiv = document.querySelector(`[id*='mainDiv']`);
+            var existingDiv = document.querySelector(`[id*='mainDivPID']`);
 
             existingDiv.appendChild(newDiv);
             var pivotDiv = document.querySelector(`[id*='pivotGrid']`);
 
             if (window.jQuery && window.jQuery.fn.pivot) {
-                var pivotDiv = that.byId("mainDiv").getDomRef();
+                var pivotDiv = that.byId("mainDivPID").getDomRef();
                 var pivotData = that.jsonToPivotData(data);
                 // that.pivotData = pivotData;
 
@@ -1490,9 +1560,9 @@ sap.ui.define([
 
         },
         onDownLoad: function () {
-            that.selLoc = that.byId("idLocation").getValue();
-            that.oSelProd = that.byId("idProduct").getValue();
-            var excel = document.querySelector("[id*=mainDiv]");
+            that.selLoc = that.byId("idLocationPID").getValue();
+            that.oSelProd = that.byId("idProductPID").getValue();
+            var excel = document.querySelector("[id*=mainDivPID]");
             if (excel.innerHTML == "" || excel.innerHTML == " ") {
                 MessageToast.show("No Data is not displaying for download");
                 return;
@@ -1527,6 +1597,76 @@ sap.ui.define([
 
 
         },
+        saveDefaultVariant: function () {
+            sap.ui.core.BusyIndicator.show();
+            var array = [];
+            var details = {};
+            var sLocation = that.byId("idLocationPID").getValue();
+            var Field1 = that.byId("idLocPID").getText();
+            var sProduct = that.byId("idProductPID").getValue();
+            var Field2 = that.byId("idProdPID").getText();
+            var sType = that.byId("idPrpIdTypePID").getSelectedKey()
+            var Field3 = that.byId("idTypePID").getText()
+
+            if (!sLocation && !sProduct && sType.length === 0) {
+                sap.ui.core.BusyIndicator.hide();
+                return MessageToast.show("No values selected in filters Partial  Product,Demand Location")
+            }
+
+
+            if (sLocation) {
+                details = {
+                    Field: Field1,
+                    FieldCenter: (1).toString(),
+                    Value: sLocation,
+                    // Default: defaultChecked
+                }
+                array.push(details);
+            }
+            if (sProduct) {
+                details = {
+                    Field: Field2,
+                    FieldCenter: (1).toString(),
+                    Value: sProduct,
+                    // Default: defaultChecked
+                }
+                array.push(details);
+            }
+            if (sType) {
+                details = {
+                    Field: Field3,
+                    FieldCenter: (1).toString(),
+                    Value: sType,
+                    // Default: defaultChecked
+                }
+                array.push(details);
+            }
+
+
+
+            for (var j = 0; j < array.length; j++) {
+                array[j].IDNAME = "defaultSingle";
+                array[j].App_Name = "DefaultSingle";
+                array[j].SCOPE = "Global";
+            }
+
+            //    console.log(JSON.stringify(array));
+            this.getOwnerComponent().getModel("BModel").callFunction("/createVariant", {
+                method: "GET",
+                urlParameters: {
+                    Flag: "N",
+                    USER: (that.oGModel.getProperty("/UserId")),
+                    VARDATA: JSON.stringify(array)
+                },
+                success: function (oData) {
+                    sap.ui.core.BusyIndicator.hide();
+                },
+                error: function (error) {
+                    sap.ui.core.BusyIndicator.hide();
+                    MessageToast.show("Failed to create variant");
+                },
+            });
+        }
 
     });
 });

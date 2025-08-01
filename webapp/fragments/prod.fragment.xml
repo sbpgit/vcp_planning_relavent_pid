@@ -6,7 +6,7 @@
     xmlns:form="sap.ui.layout.form"
 >
  <SelectDialog
-        id="prod"
+        id="prodPID"
         title="Partial Products"
         items="{/ProdModel}"
         selectionChange="RequireProduct"
