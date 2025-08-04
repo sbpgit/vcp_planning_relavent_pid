@@ -369,6 +369,11 @@ sap.ui.define([
             }
             else {
                 let headerDetails = that.oGModel.getProperty("/headerDetails").filter(id => id.APPLICATION_NAME == "DefaultSingle" && id.VARIANTNAME == "defaultSingle");
+                if(!that.oGModel.getProperty("/fieldDetails")){
+                    return 
+                }
+                var oTableItems = that.oGModel.getProperty("/fieldDetails").filter(id => id.VARIANTID == headerDetails[0].VARIANTID);
+                
                 if (headerDetails.length) {
                     for (var i = 0; i < oTableItems.length; i++) {
                         if (oTableItems[i].FIELD.includes("Loc")) {
@@ -440,6 +445,7 @@ sap.ui.define([
                     that.onReset();
                 }
             }
+      
 
         },
 
