@@ -58,7 +58,7 @@ sap.ui.define([
             var dData = [], uniqueName = [];
             that.uniqueName = [];
             sap.ui.core.BusyIndicator.show();
-            var variantUser = "NarendrakumarK@sbpcorp.in" //that.getUser();
+            var variantUser = that.getUser();
             // var variantUser = 'maheshavireddy@sbpdigital.com';
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             that.oGModel.setProperty("/UserId", variantUser);
