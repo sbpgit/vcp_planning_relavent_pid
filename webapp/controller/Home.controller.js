@@ -58,7 +58,7 @@ sap.ui.define([
             var dData = [], uniqueName = [];
             that.uniqueName = [];
             sap.ui.core.BusyIndicator.show();
-            var variantUser = that.getUser();
+            var variantUser = "NarendrakumarK@sbpcorp.in" //that.getUser();
             // var variantUser = 'maheshavireddy@sbpdigital.com';
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             that.oGModel.setProperty("/UserId", variantUser);
@@ -302,7 +302,7 @@ sap.ui.define([
             if (that.selectedApp !== "Standard") {
                 for (var i = 0; i < oTableItems.length; i++) {
                     if (that.selectedApp === oTableItems[i].VARIANTNAME && oTableItems[i].APPLICATION_NAME === appName) {
-                        if (oTableItems[i].FIELD.includes("Loc")) {
+                        if (oTableItems[i].FIELD.includes("Demand Location")) {
                             oLoc = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultLocation", oLoc);
                             var sFilter = new sap.ui.model.Filter({
@@ -313,7 +313,7 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        else if (oTableItems[i].FIELD.includes("Prod")) {
+                        else if (oTableItems[i].FIELD.includes("Partial Product")) {
                             oProd = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultProduct", oProd);
                             var sFilter = new sap.ui.model.Filter({
@@ -376,7 +376,7 @@ sap.ui.define([
                 
                 if (headerDetails.length) {
                     for (var i = 0; i < oTableItems.length; i++) {
-                        if (oTableItems[i].FIELD.includes("Loc")) {
+                        if (oTableItems[i].FIELD.includes("Demand Location")) {
                             oLoc = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultLocation", oLoc);
                             var sFilter = new sap.ui.model.Filter({
@@ -387,7 +387,7 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        else if (oTableItems[i].FIELD.includes("Prod")) {
+                        else if (oTableItems[i].FIELD.includes("Partial Product")) {
                             oProd = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultProduct", oProd);
                             var sFilter = new sap.ui.model.Filter({
@@ -595,7 +595,7 @@ sap.ui.define([
             var oDelted = {}, deletedArray = [], count = 0;
             var totalVariantData = that.oGModel.getProperty("/VariantData");
             var selected = oEvent.getParameters();
-            var variantUser = that.getUser();
+            var variantUser = "NarendrakumarK@sbpcorp.in" //that.getUser();
             // var variantUser = 'maheshavireddy@sbpdigital.com';
             if (selected.def) {
                 totalVariantData.filter(item1 => {
