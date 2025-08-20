@@ -595,7 +595,7 @@ sap.ui.define([
             var oDelted = {}, deletedArray = [], count = 0;
             var totalVariantData = that.oGModel.getProperty("/VariantData");
             var selected = oEvent.getParameters();
-            var variantUser = "NarendrakumarK@sbpcorp.in" //that.getUser();
+            var variantUser = that.getUser();
             // var variantUser = 'maheshavireddy@sbpdigital.com';
             if (selected.def) {
                 totalVariantData.filter(item1 => {
