@@ -11,7 +11,6 @@ sap.ui.define([
 ], (Controller, JSONModel, Filter, FilterOperator, MessageToast, MessageBox, UIComponent, Spreadsheet, formatter) => {
     "use strict";
     var oGModel, that;
-
     return Controller.extend("vcpapp.vcpplanningrelevantpid.controller.Home", {
         formatter: formatter,
         onInit() {
@@ -758,7 +757,7 @@ sap.ui.define([
         getLocation: function () {
             var topCount = that.oGModel.getProperty("/MaxCount");
             that.aLocData = []
-            that.getOwnerComponent().getModel("BModel").read("/getLocation", {
+            that.getOwnerComponent().getModel("BModel").read("/getfactorylocdesc", {
                 urlParameters: {
                     "$skip": that.skip,
                     "$top": topCount
@@ -772,13 +771,15 @@ sap.ui.define([
                     } else {
                         that.skip = 0;
                         that.aLocData = that.aLocData.concat(oData.results);
+                        var locData = that.removeDuplicate(that.aLocData,'DEMAND_LOC')
+                        locData = locData.sort((a, b) => a.DEMAND_LOC.localeCompare(b.DEMAND_LOC, undefined, { numeric: true, sensitivity: 'base' }));
                         that.LocModel = new JSONModel();
                         that.LocModel.setData({
-                            LocModel: that.aLocData
+                            LocModel: locData
                         })
                         sap.ui.getCore().byId("locPID").setModel(that.LocModel);
                         sap.ui.core.BusyIndicator.hide();
-                        that.getProduct()
+                        // that.getProduct()
 
 
                     }
@@ -802,34 +803,34 @@ sap.ui.define([
         getProduct: function () {
             var topCount = parseInt(30000)
             sap.ui.core.BusyIndicator.show();
-            that.getOwnerComponent().getModel("BModel").read("/genPartialProd", {
-                urlParameters: {
-                    "$skip": that.skip,
-                    "$top": topCount
-                },
-                success: function (oData) {
-                    sap.ui.core.BusyIndicator.hide();
-                    if (topCount == oData.results.length) {
-                        that.skip += topCount;
-                        that.allData = that.allData.concat(oData.results);
-                        that.getProduct();
-                    } else {
-                        that.skip = 0;
-                        that.allData = that.allData.concat(oData.results);
-                        oData.results = that.allData;
-                        that.ProdData = that.allData;
-                        that.ProdModel = new JSONModel();
-                        that.prodData = oData.results;
-                        that.ProdModel.setData({
-                            ProdModel: oData.results
-                        });
-                    }
-                },
-                error: function (oData, error) {
-                    sap.ui.core.BusyIndicator.hide();
-                    MessageToast.show("error");
-                },
-            });
+            // that.getOwnerComponent().getModel("BModel").read("/genPartialProd", {
+            //     urlParameters: {
+            //         "$skip": that.skip,
+            //         "$top": topCount
+            //     },
+            //     success: function (oData) {
+            //         sap.ui.core.BusyIndicator.hide();
+            //         if (topCount == oData.results.length) {
+            //             that.skip += topCount;
+            //             that.allData = that.allData.concat(oData.results);
+            //             that.getProduct();
+            //         } else {
+            //             that.skip = 0;
+                        // that.allData = that.allData.concat(oData.results);
+                        // oData.results = that.allData;
+                        // that.ProdData = that.allData;
+                        // that.ProdModel = new JSONModel();
+                        // that.prodData = oData.results;
+                        // that.ProdModel.setData({
+                        //     ProdModel: oData.results
+                        // });
+                    // }
+                // },
+            //     error: function (oData, error) {
+            //         sap.ui.core.BusyIndicator.hide();
+            //         MessageToast.show("error");
+            //     },
+            // });
         },
 
         onClose: function (oEvent) {
@@ -893,7 +894,7 @@ sap.ui.define([
         onLocationSelect: function (oEvent) {
             var oEv = oEvent.getParameter("selectedItem");
             if (!oEv) {
-                that.aProd = that.ProdData.filter((e) => e.LOCATION_ID == that.byId("idLocationPID").getValue());
+                that.aProd = that.aLocData.filter((e) => e.DEMAND_LOC == that.byId("idLocationPID").getValue());
                 that.ProdModel = new JSONModel();
                 that.ProdModel.setData({
                     ProdModel: that.aProd
@@ -901,7 +902,8 @@ sap.ui.define([
                 sap.ui.getCore().byId("prodPID").setModel(that.ProdModel)
                 return;
             }
-            that.aProd = that.ProdData.filter((e) => e.LOCATION_ID == oEv.getTitle());
+            that.aProd = that.aLocData.filter((e) => e.DEMAND_LOC == oEv.getTitle());
+            that.aProd = that.removeDuplicate(that.aProd,'PRODUCT_ID')
             that.ProdModel = new JSONModel();
             that.ProdModel.setData({
                 ProdModel: that.aProd

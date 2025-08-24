@@ -15,8 +15,8 @@
       
     >
         <StandardListItem
-            title="{LOCATION_ID}"
-            description="{LOCATION_DESC}"
+            title="{DEMAND_LOC}"
+            description="{DEMAND_DESC}"
         />
     </SelectDialog>
 
