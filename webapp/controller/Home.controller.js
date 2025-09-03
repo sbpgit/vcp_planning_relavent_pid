@@ -942,8 +942,8 @@ sap.ui.define([
                     oFilters.push(
                         new sap.ui.model.Filter({
                             filters: [
-                                new sap.ui.model.Filter("LOCATION_ID", sap.ui.model.FilterOperator.Contains, sQuery),
-                                new sap.ui.model.Filter("LOCATION_DESC", sap.ui.model.FilterOperator.Contains, sQuery)
+                                new sap.ui.model.Filter("DEMAND_LOC", sap.ui.model.FilterOperator.Contains, sQuery),
+                                new sap.ui.model.Filter("DEMAND_DESC", sap.ui.model.FilterOperator.Contains, sQuery)
                             ],
                             and: false
                         })
