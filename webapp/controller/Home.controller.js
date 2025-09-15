@@ -368,11 +368,12 @@ sap.ui.define([
             }
             else {
                 let headerDetails = that.oGModel.getProperty("/headerDetails").filter(id => id.APPLICATION_NAME == "DefaultSingle" && id.VARIANTNAME == "defaultSingle");
-                if(!that.oGModel.getProperty("/fieldDetails")){
-                    return 
+                if (!that.oGModel.getProperty("/fieldDetails")) {
+                    sap.ui.core.BusyIndicator.hide();
+                    return;
                 }
                 var oTableItems = that.oGModel.getProperty("/fieldDetails").filter(id => id.VARIANTID == headerDetails[0].VARIANTID);
-                
+
                 if (headerDetails.length) {
                     for (var i = 0; i < oTableItems.length; i++) {
                         if (oTableItems[i].FIELD.includes("Demand Location")) {
@@ -444,7 +445,7 @@ sap.ui.define([
                     that.onReset();
                 }
             }
-      
+
 
         },
 
@@ -771,7 +772,7 @@ sap.ui.define([
                     } else {
                         that.skip = 0;
                         that.aLocData = that.aLocData.concat(oData.results);
-                        var locData = that.removeDuplicate(that.aLocData,'DEMAND_LOC')
+                        var locData = that.removeDuplicate(that.aLocData, 'DEMAND_LOC')
                         locData = locData.sort((a, b) => a.DEMAND_LOC.localeCompare(b.DEMAND_LOC, undefined, { numeric: true, sensitivity: 'base' }));
                         that.LocModel = new JSONModel();
                         that.LocModel.setData({
@@ -816,16 +817,16 @@ sap.ui.define([
             //             that.getProduct();
             //         } else {
             //             that.skip = 0;
-                        // that.allData = that.allData.concat(oData.results);
-                        // oData.results = that.allData;
-                        // that.ProdData = that.allData;
-                        // that.ProdModel = new JSONModel();
-                        // that.prodData = oData.results;
-                        // that.ProdModel.setData({
-                        //     ProdModel: oData.results
-                        // });
-                    // }
-                // },
+            // that.allData = that.allData.concat(oData.results);
+            // oData.results = that.allData;
+            // that.ProdData = that.allData;
+            // that.ProdModel = new JSONModel();
+            // that.prodData = oData.results;
+            // that.ProdModel.setData({
+            //     ProdModel: oData.results
+            // });
+            // }
+            // },
             //     error: function (oData, error) {
             //         sap.ui.core.BusyIndicator.hide();
             //         MessageToast.show("error");
@@ -845,14 +846,14 @@ sap.ui.define([
 
             } else {
                 if (that.byId("idLocationPID").getValue().length > 0) {
-                    if(sap.ui.getCore().byId("prodPID").getItems().length > 0 ){
+                    if (sap.ui.getCore().byId("prodPID").getItems().length > 0) {
                         sap.ui.getCore().byId("prodPID").getBinding("items").filter([])
                         that._prodFrag.open()
-                    }else{
+                    } else {
                         that.onLocationSelect(oEvent);
                         that._prodFrag.open()
                     }
-                   
+
                 } else {
                     MessageToast.show("Please Select a Location")
                 }
@@ -903,7 +904,7 @@ sap.ui.define([
                 return;
             }
             that.aProd = that.aLocData.filter((e) => e.DEMAND_LOC == oEv.getTitle());
-            that.aProd = that.removeDuplicate(that.aProd,'PRODUCT_ID')
+            that.aProd = that.removeDuplicate(that.aProd, 'PRODUCT_ID')
             that.ProdModel = new JSONModel();
             that.ProdModel.setData({
                 ProdModel: that.aProd
@@ -1674,7 +1675,25 @@ sap.ui.define([
                     MessageToast.show("Failed to create variant");
                 },
             });
-        }
+        },
+        onNavPress: function () {
+            if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
+                var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+                // generate the Hash to display 
+                var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+                    target: {
+                        semanticObject: "VCPDocument",
+                        action: "Display"
+                    }
+                })) || "";
+                var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
+                oStorage.put("nodeId", 85);
+                //Generate a  URL for the second application
+                var url = window.location.href.split('#')[0] + hash;
+                //Navigate to second app
+                sap.m.URLHelper.redirect(url, true);
+            }
+        },
 
     });
 });
