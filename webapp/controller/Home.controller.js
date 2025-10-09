@@ -58,6 +58,7 @@ sap.ui.define([
             that.uniqueName = [];
             sap.ui.core.BusyIndicator.show();
             var variantUser = that.getUser();
+            variantUser = variantUser.toLowerCase();
             // var variantUser = 'maheshavireddy@sbpdigital.com';
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             that.oGModel.setProperty("/UserId", variantUser);
@@ -596,6 +597,7 @@ sap.ui.define([
             var totalVariantData = that.oGModel.getProperty("/VariantData");
             var selected = oEvent.getParameters();
             var variantUser = that.getUser();
+             variantUser = variantUser.toLowerCase();
             // var variantUser = 'maheshavireddy@sbpdigital.com';
             if (selected.def) {
                 totalVariantData.filter(item1 => {
