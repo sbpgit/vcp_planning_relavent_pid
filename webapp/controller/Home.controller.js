@@ -302,7 +302,7 @@ sap.ui.define([
             if (that.selectedApp !== "Standard") {
                 for (var i = 0; i < oTableItems.length; i++) {
                     if (that.selectedApp === oTableItems[i].VARIANTNAME && oTableItems[i].APPLICATION_NAME === appName) {
-                        if (oTableItems[i].FIELD.includes("Demand Location")) {
+                        if (oTableItems[i].FIELD.includes("Location")) {
                             oLoc = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultLocation", oLoc);
                             var sFilter = new sap.ui.model.Filter({
@@ -313,7 +313,7 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        else if (oTableItems[i].FIELD.includes("Partial Product")) {
+                        else if (oTableItems[i].FIELD.includes("Product")) {
                             oProd = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultProduct", oProd);
                             var sFilter = new sap.ui.model.Filter({
@@ -324,11 +324,11 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        else if (oTableItems[i].FIELD.includes("TYPE")) {
+                        else if (oTableItems[i].FIELD.includes("Type")) {
                             oType = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultType", oType);
                             var sFilter = new sap.ui.model.Filter({
-                                path: "TYPE",
+                                path: "Type",
                                 operator: sap.ui.model.FilterOperator.EQ,
                                 value1: oTableItems[i].VALUE,
                             });
@@ -377,7 +377,7 @@ sap.ui.define([
 
                 if (headerDetails.length) {
                     for (var i = 0; i < oTableItems.length; i++) {
-                        if (oTableItems[i].FIELD.includes("Demand Location")) {
+                        if (oTableItems[i].FIELD.includes("Location")) {
                             oLoc = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultLocation", oLoc);
                             var sFilter = new sap.ui.model.Filter({
@@ -388,7 +388,7 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        else if (oTableItems[i].FIELD.includes("Partial Product")) {
+                        else if (oTableItems[i].FIELD.includes("Product")) {
                             oProd = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultProduct", oProd);
                             var sFilter = new sap.ui.model.Filter({
@@ -399,11 +399,11 @@ sap.ui.define([
                             that.locProdFilters.push(sFilter);
 
                         }
-                        else if (oTableItems[i].FIELD.includes("TYPE")) {
+                        else if (oTableItems[i].FIELD.includes("Type")) {
                             oType = oTableItems[i].VALUE;
                             that.oGModel.setProperty("/defaultType", oType);
                             var sFilter = new sap.ui.model.Filter({
-                                path: "TYPE",
+                                path: "Type",
                                 operator: sap.ui.model.FilterOperator.EQ,
                                 value1: oTableItems[i].VALUE,
                             });

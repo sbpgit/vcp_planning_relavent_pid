@@ -31,25 +31,46 @@
 					<Label id="idcluCountPID" text="" class="oLoc" />
 				</l:VerticalLayout>
 				<l:VerticalLayout >
-					<Label id="idLocPID" required="true" text="Demand Location" />
+					<Label id="idLocPID" required="true" text="Location" />
 					<MultiInput required="true" id="idLocationPID" class="oLoc" showValueHelp="true" placeholder="Location" change="onSelPrimary" width="250px" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
 				</l:VerticalLayout>
 				<l:VerticalLayout >
-					<Label id="idProdPID" required="true" text="Partial Product" />
+					<Label id="idProdPID" required="true" text="Product" />
 					<MultiInput required="true" id="idProductPID" class="oLoc" showValueHelp="true" placeholder="Product" change="onSelPrimary" width="250px" valueHelpOnly="true" showSuggestion="true" valueHelpRequest="onValueHelp" textDirection="Inherit"></MultiInput>
 				</l:VerticalLayout>
-				<l:HorizontalLayout >
-					<Button id="idGetDataPID" text="Go" press="onGetData" type="Emphasized" visible="true" class="btn"/>
-					<Button id="idRestorePID" text="Reset" press="onReset" type="Default" visible="true" class="btn"/>
-					<Label text="TYPE" id = "idTypePID" textAlign="Right" class="Type" />
-					<Select id="idPrpIdTypePID" selectedKey="3" change="onSelectionofPrpType" textAlign="Right" class="sapUiSmallMarginEnd btn">
+				<l:VerticalLayout >
+				<Label text="Type" id = "idTypePID" />
+					<!-- <Select id="idPrpIdTypePID" selectedKey="3" showSecondaryValues="true" change="onSelectionofPrpType"  class="mySelectClass">
 
-						<core:ListItem key="1" text="1"/>
-						<core:ListItem key="2" text="2"/>
-						<core:ListItem key="3" text="3"/>
-						<core:ListItem key="4" text="4"/>
-					</Select>
-				</l:HorizontalLayout >
+						<core:ListItem key="1" text="1" additionalText="Limits"   />
+						<core:ListItem key="2" text="2" additionalText="Manual" />
+						<core:ListItem key="3" text="3" additionalText="Clustering"/>
+						<core:ListItem key="4" text="4" additionalText="Full Filling"/>
+					</Select> -->
+					<ComboBox id="idPrpIdTypePID" selectedKey="1" showSecondaryValues="true"  change="onSelectionofPrpType">
+                                              
+                                                <core:ListItem key="1" text="Threshold" additionalText="1"/>
+                                                <core:ListItem key="2" text="Manual" additionalText="2"/>
+                                                <core:ListItem key="3" text="Clustering" additionalText="3"/>
+                                                <core:ListItem key="4" text="Residuals" additionalText="4"/>
+                                               
+                                                
+                                            </ComboBox>
+				</l:VerticalLayout>
+				<!-- <l:HorizontalLayout > -->
+				<l:VerticalLayout >
+
+				<Label text=""/>
+				
+					<Button id="idGetDataPID" text="Go" press="onGetData" type="Emphasized" visible="true" class="sapUiSmallMarginBegin sapUiSmallMarginEnd"/>
+					</l:VerticalLayout>
+					<l:VerticalLayout >
+					<Label text=""/>
+					<Button id="idRestorePID" text="Reset" press="onReset" type="Default" visible="true" class="sapUiTinyMarginEnd"/>
+					</l:VerticalLayout>
+			
+					
+				<!-- </l:HorizontalLayout > -->
 	<l:VerticalLayout >
 	
 				<ToolbarSpacer/>

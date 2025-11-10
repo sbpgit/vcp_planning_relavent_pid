@@ -24,10 +24,10 @@ table.pvtTable tbody tr th {
     margin-top:10px;
     margin-right:10px
 }
-.btn{
+/* .btn{
     margin-top:21px !important ; 
     margin-right:10px;
-}
+} */
 .Type{
     margin-top:27px !important ; 
     margin-right:6px;
@@ -35,8 +35,18 @@ table.pvtTable tbody tr th {
 .oLoc{
     margin-right:10px !important ;
 }
-div#__layout5 {
+/* div#__layout5 {
     margin-left: 28.5%;
+} */
+
+div#__layout7 {
+    margin-left: 19%;
+}
+
+span.sapMSelectListCell.sapMSelectListLastCell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 *{
