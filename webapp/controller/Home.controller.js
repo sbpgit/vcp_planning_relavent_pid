@@ -23,7 +23,7 @@ sap.ui.define([
             that.variantModel.setSizeLimit(5000);
             that.oLoc1 = that.byId("idLocationPID");
             that.oProd = that.byId("idProductPID");
-            that.oType = that.byId("idPrpIdTypePID")
+            that.oType = that.byId("idPrpIdTypePID").setSelectedKey("3");
             that.oLocList = sap.ui.getCore().byId("locPID");
             that.oProdList = sap.ui.getCore().byId("prodPID");
             that.allData = [];
@@ -288,7 +288,7 @@ sap.ui.define([
             that.oGModel.setProperty("/setProduct", '');
             that.oGModel.setProperty("/defaultLocation", "");
             that.oGModel.setProperty("/defaultProduct", "");
-            that.oGModel.setProperty("/defaultType", "");
+            that.oGModel.setProperty("/defaultType", "3");
             that.oGModel.setProperty("/defaultCustomer", []);
             if (that.oGModel.getProperty("/fromFunction") === "X") {
                 that.oGModel.setProperty("/fromFunction", "");
@@ -326,6 +326,7 @@ sap.ui.define([
                         }
                         else if (oTableItems[i].FIELD.includes("Type")) {
                             oType = oTableItems[i].VALUE;
+                            // oType = that.byId("idPrpIdTypePID").getSelectedKey();
                             that.oGModel.setProperty("/defaultType", oType);
                             var sFilter = new sap.ui.model.Filter({
                                 path: "Type",
@@ -401,6 +402,7 @@ sap.ui.define([
                         }
                         else if (oTableItems[i].FIELD.includes("Type")) {
                             oType = oTableItems[i].VALUE;
+                            // oType = that.byId("idPrpIdTypePID").getSelectedKey();
                             that.oGModel.setProperty("/defaultType", oType);
                             var sFilter = new sap.ui.model.Filter({
                                 path: "Type",
@@ -432,7 +434,8 @@ sap.ui.define([
                         that.oGModel.getProperty("/defaultType", oType);
                     }
                     else {
-                        that.oType.setValue("");
+                        // that.oType.setValue("3");
+                        that.oGModel.setProperty("/defaultType", "3");
                     }
 
                     sap.ui.core.BusyIndicator.hide();
@@ -474,7 +477,8 @@ sap.ui.define([
             var Field1 = that.byId("idLocPID").getText();
             var sProduct = that.byId("idProductPID").getValue();
             var Field2 = that.byId("idProdPID").getText();
-            var sType = that.byId("idPrpIdTypePID").getSelectedKey()
+            // var sType = that.byId("idPrpIdTypePID").getSelectedKey()
+            var sType = that.byId("idPrpIdTypePID").getSelectedItem().getText();
             var Field3 = that.byId("idTypePID").getText()
             var varName = oEvent.getParameters().name;
             var sDefault = oEvent.getParameters().def;

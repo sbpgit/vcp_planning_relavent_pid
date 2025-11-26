@@ -47,7 +47,7 @@
 						<core:ListItem key="3" text="3" additionalText="Clustering"/>
 						<core:ListItem key="4" text="4" additionalText="Full Filling"/>
 					</Select> -->
-					<ComboBox id="idPrpIdTypePID" selectedKey="1" showSecondaryValues="true"  change="onSelectionofPrpType">
+					<ComboBox id="idPrpIdTypePID" selectedKey="3" showSecondaryValues="true"  change="onSelectionofPrpType">
                                               
                                                 <core:ListItem key="1" text="Threshold" additionalText="1"/>
                                                 <core:ListItem key="2" text="Manual" additionalText="2"/>
