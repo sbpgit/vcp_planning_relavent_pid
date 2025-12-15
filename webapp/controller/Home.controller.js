@@ -23,7 +23,7 @@ sap.ui.define([
             that.variantModel.setSizeLimit(5000);
             that.oLoc1 = that.byId("idLocationPID");
             that.oProd = that.byId("idProductPID");
-            that.oType = that.byId("idPrpIdTypePID").setSelectedKey("3");
+            that.oType = that.byId("idPrpIdTypePID")
             that.oLocList = sap.ui.getCore().byId("locPID");
             that.oProdList = sap.ui.getCore().byId("prodPID");
             that.allData = [];
@@ -48,6 +48,9 @@ sap.ui.define([
                 let email = sap.ushell.Container.getService("UserInfo").getUser().getEmail();
                 vUser = (email) ? email : "";
             }
+             if(!vUser){
+                vUser='null';
+            }
             return vUser;
         },
 
@@ -59,7 +62,6 @@ sap.ui.define([
             sap.ui.core.BusyIndicator.show();
             var variantUser = that.getUser();
             variantUser = variantUser.toLowerCase();
-            // var variantUser = 'maheshavireddy@sbpdigital.com';
             var appName = this.getOwnerComponent().getManifestEntry("/sap.app/id");
             that.oGModel.setProperty("/UserId", variantUser);
             // Define the filters
@@ -288,7 +290,7 @@ sap.ui.define([
             that.oGModel.setProperty("/setProduct", '');
             that.oGModel.setProperty("/defaultLocation", "");
             that.oGModel.setProperty("/defaultProduct", "");
-            that.oGModel.setProperty("/defaultType", "3");
+            that.oGModel.setProperty("/defaultType", "");
             that.oGModel.setProperty("/defaultCustomer", []);
             if (that.oGModel.getProperty("/fromFunction") === "X") {
                 that.oGModel.setProperty("/fromFunction", "");
@@ -326,7 +328,6 @@ sap.ui.define([
                         }
                         else if (oTableItems[i].FIELD.includes("Type")) {
                             oType = oTableItems[i].VALUE;
-                            // oType = that.byId("idPrpIdTypePID").getSelectedKey();
                             that.oGModel.setProperty("/defaultType", oType);
                             var sFilter = new sap.ui.model.Filter({
                                 path: "Type",
@@ -374,9 +375,9 @@ sap.ui.define([
                     sap.ui.core.BusyIndicator.hide();
                     return;
                 }
-                var oTableItems = that.oGModel.getProperty("/fieldDetails").filter(id => id.VARIANTID == headerDetails[0].VARIANTID);
 
                 if (headerDetails.length) {
+                var oTableItems = that.oGModel.getProperty("/fieldDetails").filter(id => id.VARIANTID == headerDetails[0].VARIANTID);
                     for (var i = 0; i < oTableItems.length; i++) {
                         if (oTableItems[i].FIELD.includes("Location")) {
                             oLoc = oTableItems[i].VALUE;
@@ -402,7 +403,6 @@ sap.ui.define([
                         }
                         else if (oTableItems[i].FIELD.includes("Type")) {
                             oType = oTableItems[i].VALUE;
-                            // oType = that.byId("idPrpIdTypePID").getSelectedKey();
                             that.oGModel.setProperty("/defaultType", oType);
                             var sFilter = new sap.ui.model.Filter({
                                 path: "Type",
@@ -434,8 +434,7 @@ sap.ui.define([
                         that.oGModel.getProperty("/defaultType", oType);
                     }
                     else {
-                        // that.oType.setValue("3");
-                        that.oGModel.setProperty("/defaultType", "3");
+                        that.oType.setValue("");
                     }
 
                     sap.ui.core.BusyIndicator.hide();
@@ -477,8 +476,7 @@ sap.ui.define([
             var Field1 = that.byId("idLocPID").getText();
             var sProduct = that.byId("idProductPID").getValue();
             var Field2 = that.byId("idProdPID").getText();
-            // var sType = that.byId("idPrpIdTypePID").getSelectedKey()
-            var sType = that.byId("idPrpIdTypePID").getSelectedItem().getText();
+            var sType = that.byId("idPrpIdTypePID").getSelectedKey()
             var Field3 = that.byId("idTypePID").getText()
             var varName = oEvent.getParameters().name;
             var sDefault = oEvent.getParameters().def;
@@ -602,7 +600,6 @@ sap.ui.define([
             var selected = oEvent.getParameters();
             var variantUser = that.getUser();
              variantUser = variantUser.toLowerCase();
-            // var variantUser = 'maheshavireddy@sbpdigital.com';
             if (selected.def) {
                 totalVariantData.filter(item1 => {
                     if (JSON.parse(selected.def) === item1.VARIANTID && item1.USER !== variantUser) {
@@ -764,7 +761,12 @@ sap.ui.define([
         getLocation: function () {
             var topCount = that.oGModel.getProperty("/MaxCount");
             that.aLocData = []
-            that.getOwnerComponent().getModel("BModel").read("/getfactorylocdesc", {
+            that.getOwnerComponent().getModel("BModel").read("/getRolesLocProd", {
+                filters:  [new Filter(
+              "USER",
+              FilterOperator.EQ,
+              that.getUser()
+            )],
                 urlParameters: {
                     "$skip": that.skip,
                     "$top": topCount
