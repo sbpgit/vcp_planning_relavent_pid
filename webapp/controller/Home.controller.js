@@ -747,7 +747,7 @@ sap.ui.define([
                 ],
                 success: function (oData) {
                     that.oGModel.setProperty("/MaxCount", oData.results[0].PARAMETER_VALUE);
-                    that.getVariantData();
+                    // that.getVariantData();
                     that.getLocation()
                 },
                 error: function (oData, error) {
